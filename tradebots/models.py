@@ -3,9 +3,9 @@ import json
 from decimal import Decimal
 
 class MartBotState(models.Model):
+    bot_name = models.CharField(primary_key=True, max_length=100)
     api_key = models.CharField(max_length=100, blank=True)
     api_secret = models.CharField(max_length=100, blank=True)
-    bot_name = models.CharField(max_length=100, blank=True)
     total_profit = models.FloatField(default=0.00)
     transactions = models.IntegerField(default=0)
     sell_price = models.FloatField(null=True, blank=True)

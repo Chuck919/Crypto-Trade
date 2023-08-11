@@ -18,7 +18,7 @@ h4 {
     color: lightblue;
 }
 
-button[type="submit"] {
+button {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -27,11 +27,11 @@ button[type="submit"] {
     cursor: pointer;
 }
 
-button[type="submit"]:hover {
+button:hover {
     background-color: #0056b3;
 }
 
-button[type="submit"]:focus {
+button:focus {
     outline: none;
 }
 
@@ -59,4 +59,19 @@ a {
 
 .stop-bot-btn:hover {
     background-color: #c82333;
+}
+
+.alert {
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.alert.success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.alert.error {
+    background-color: #dc3545;
+    color: #fff;
 }

@@ -24,7 +24,7 @@
     </a>
     <button type="submit"><a href="/signout">Sign Out</a></button>
     <button type='submit'><a href='/password_change'>Change Your Password</a></button>
-    {% for bot_item in bot_data_with_forms %}
+    {% for bot_item in bot_data %}
     <div class="box">
         <form method="post" class="stop-bot-form">
             {% csrf_token %}

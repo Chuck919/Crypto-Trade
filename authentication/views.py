@@ -92,17 +92,18 @@ def signin(request):
         
         if user is not None:
             login(request, user)
+            messages.success(request, "Sign in successful")
             return redirect('authentication:userhome')
             
         else:
-            messages.error(request, 'Login Error')
+            messages.error(request, 'Sign in Error')
             return redirect('authentication:signin')
     
     return render(request, 'authentication/signin.html')
 
 def signout(request):
     logout(request)
-    messages.success(request, 'Logout Success')
+    messages.success(request, 'Sign out Success')
     return redirect('authentication:home')
 
 def activateEmail(request, user, to_email):
@@ -151,18 +152,14 @@ def userhome(request):
         try:
             bot_state = MartBotState.objects.get(bot_name=bot_name)
             total_profit = bot_state.total_profit
+
+            form = StopBotForm(initial={'bot_name': bot_name})
+            bot_data.append({'bot': {'bot_name': bot_name, 'total_profit': total_profit}, 'form': form})
         except MartBotState.DoesNotExist:
-            raise Exception('Bot state does not exist')
-
-        bot_data.append({'bot_name': bot_name, 'total_profit': total_profit})
-
-    bot_data_with_forms = []
-    for bot_item in bot_data:
-        form = StopBotForm(initial={'bot_name': bot_item['bot_name']})
-        bot_data_with_forms.append({'bot': bot_item, 'form': form})
+            messages.success(request, 'Go to Trading Bots and create your first bot to get started!')
 
     context = {
-        'bot_data_with_forms': bot_data_with_forms,
+        'bot_data': bot_data,
     }
 
     if request.method == 'POST':
