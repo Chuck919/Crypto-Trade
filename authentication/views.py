@@ -156,7 +156,8 @@ def userhome(request):
             form = StopBotForm(initial={'bot_name': bot_name})
             bot_data.append({'bot': {'bot_name': bot_name, 'total_profit': total_profit}, 'form': form})
         except MartBotState.DoesNotExist:
-            messages.success(request, 'Go to Trading Bots and create your first bot to get started!')
+            pass
+            #messages.success(request, 'Go to Trading Bots and create your first bot to get started!')
 
     context = {
         'bot_data': bot_data,
@@ -167,20 +168,18 @@ def userhome(request):
         if form.is_valid():
             bot_name = form.cleaned_data['bot_name']
             print("Received bot name:", bot_name)
-
-            # Check if the bot instance exists in CryptoBots model
             try:
                 crypto_bot = CryptoBots.objects.get(bot_name=bot_name)
             except CryptoBots.DoesNotExist:
                 messages.error(request, 'Bot instance not found.')
             else:
-                # If the bot exists, delete it from both databases
                 print('deleting')
                 bot_state = MartBotState.objects.get(bot_name=bot_name)
                 bot_state.delete()
 
                 crypto_bot.delete()
                 messages.success(request, 'Bot stopped successfully.')
+            return render(request, 'authentication/del_success.html')
 
     return render(request, 'authentication/userhome.html', context)
 

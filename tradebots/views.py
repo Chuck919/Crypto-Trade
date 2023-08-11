@@ -68,7 +68,7 @@ def bots(request):
     return render(request, 'tradebots/index.html')
 
 @login_required
-def success_page(request):
+def success(request):
     return render(request, 'tradebots/success.html')
 
 @login_required
@@ -160,4 +160,3 @@ def martingale(request):
 def task_running_check():
     global task_running
     task_running = True
-
