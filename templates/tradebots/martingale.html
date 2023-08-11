@@ -1,0 +1,43 @@
+<html>
+<head>
+    <title>Trading Parameters</title>
+</head>
+<body>
+    <h1>Trading Parameters</h1>
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <form action="{% url 'martingale' %}" method="post">
+        {% csrf_token %}
+        <label for="coin_pair">Coin Pair:</label>
+        <input type="text" name="coin_pair" id="coin_pair" required>
+        <br>
+        <label for="price_scale">Price Scale:</label>
+        <input type="number" name="price_scale" id="price_scale" step="0.01" required>
+        <br>
+        <label for="rebound">Rebound:</label>
+        <input type="number" name="rebound" id="rebound" step="0.01" required>
+        <br>
+        <label for="take_profit">Take Profit:</label>
+        <input type="number" name="take_profit" id="take_profit" step="0.01" required>
+        <br>
+        <label for="trailing">Trailing:</label>
+        <input type="number" name="trailing" id="trailing" step="0.01" required>
+        <br>
+        <label for="stable_coin_amount">Stable Coin Amount:</label>
+        <input type="number" name="stable_coin_amount" id="stable_coin_amount" step="0.01" required>
+        <br>
+        <label for="volume_scale">Volume Scale:</label>
+        <input type="number" name="volume_scale" id="volume_scale" step="0.01" required>
+        <br>
+        <label for="orders">Orders:</label>
+        <input type="number" name="orders" id="orders" required>
+        <br>
+        <input type="submit" value="Run Martingale Bot">
+    </form>
+</body>
+</html>
