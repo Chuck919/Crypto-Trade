@@ -64,7 +64,6 @@ class MartBot:
     def main(self, new_price):
         print(f'in bot {self.key}')
         self.print_local_variables()
-        self.load_state()
         if self.bought == 0:
             self.buy_order(new_price)
 

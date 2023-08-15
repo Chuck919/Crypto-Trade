@@ -49,6 +49,7 @@ class PriceUpdater:
                     # Deserialize the MartBot instance from the stored bytes using pickle
                     bot_instance = pickle.loads(bot.bot_instance)
                     try:
+                        bot_instance.load_state()
                         bot_instance.price_check(current_price)
                         bot_instance.save_state()
                     except:
