@@ -147,6 +147,7 @@ def userhome(request):
     bot_names = CryptoBots.objects.values_list('bot_name', flat=True)
 
     bot_data = []
+    print(bot_names)
 
     for bot_name in bot_names:
         try:
@@ -162,6 +163,7 @@ def userhome(request):
     context = {
         'bot_data': bot_data,
     }
+    print(bot_data)
 
     if request.method == 'POST':
         form = StopBotForm(request.POST)

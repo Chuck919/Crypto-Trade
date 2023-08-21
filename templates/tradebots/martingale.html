@@ -11,7 +11,7 @@
         {% endfor %}
     </ul>
     {% endif %}
-    <form action="templates/tradebots/martingale/" method="post">
+    <form action="{% url 'tradebots:martingale' %}" method="post">
         {% csrf_token %}
         <label for="coin_pair">Coin Pair:</label>
         <input type="text" name="coin_pair" id="coin_pair" required>
