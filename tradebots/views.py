@@ -46,7 +46,7 @@ class PriceUpdater:
             print(crypto_bots)
             for bot in crypto_bots:
                 if bot.bot_instance is not None:
-                    # Deserialize the MartBot instance from the stored bytes using pickle
+                    print(current_price)
                     bot_instance = pickle.loads(bot.bot_instance)
                     try:
                         bot_instance.load_state()

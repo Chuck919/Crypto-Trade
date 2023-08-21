@@ -62,7 +62,7 @@ class MartBot:
             print(f"{var_name}: {var_value}")
 
     def main(self, new_price):
-        print(f'in bot {self.key}')
+        print(f'in bot {self.key} main')
         self.print_local_variables()
         if self.bought == 0:
             self.buy_order(new_price)
@@ -93,6 +93,8 @@ class MartBot:
             symbol_check = ticker['symbol']
             if symbol_check == self.symbol:
                 new_price = float(ticker['price'])
+        print(f'in bot {self.key}')
+        print(new_price)
         self.main(new_price)
 
 
