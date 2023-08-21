@@ -257,7 +257,7 @@ class MartBot:
             self.scale = Decimal(state.scale)
             self.rebounce = Decimal(state.rebounce)
             self.volume_list = [Decimal(item) for item in json.loads(state.volume_list)]
-        except MartBotState.DoesNotExist:
+        #except MartBotState.DoesNotExist:
             # If the state does not exist, use the original values provided to the bot.
-            pass
+            #pass
             
