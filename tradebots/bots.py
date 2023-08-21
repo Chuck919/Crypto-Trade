@@ -234,29 +234,29 @@ class MartBot:
     
     def load_state(self):
         # Get the MartBotState instance associated with the user and bot_name.
-        try:
-            state = MartBotState.objects.get(api_secret=self.api_secret, bot_name=self.key)
-            self.total_profit = state.total_profit
-            self.transactions = state.transactions
-            self.sell_price = state.sell_price
-            self.symbol = state.symbol
-            self.profit = state.profit
-            self.trailing = state.trailing
-            self.volume = state.volume
-            self.orders = state.orders
-            self.use = state.use
-            self.bought = state.bought
-            self.buying = state.buying
-            self.selling = state.selling
-            self.trailing_buy_price = state.trailing_buy_price
-            self.recent_trailing_buy_price = state.recent_trailing_buy_price
-            self.trailing_sell_price = state.trailing_sell_price
-            self.recent_trailing_sell_price = state.recent_trailing_sell_price
+        #try:
+        state = MartBotState.objects.get(api_secret=self.api_secret, bot_name=self.key)
+        self.total_profit = state.total_profit
+        self.transactions = state.transactions
+        self.sell_price = state.sell_price
+        self.symbol = state.symbol
+        self.profit = state.profit
+        self.trailing = state.trailing
+        self.volume = state.volume
+        self.orders = state.orders
+        self.use = state.use
+        self.bought = state.bought
+        self.buying = state.buying
+        self.selling = state.selling
+        self.trailing_buy_price = state.trailing_buy_price
+        self.recent_trailing_buy_price = state.recent_trailing_buy_price
+        self.trailing_sell_price = state.trailing_sell_price
+        self.recent_trailing_sell_price = state.recent_trailing_sell_price
 
-            # Convert JSON to lists after loading
-            self.scale = Decimal(state.scale)
-            self.rebounce = Decimal(state.rebounce)
-            self.volume_list = [Decimal(item) for item in json.loads(state.volume_list)]
+        # Convert JSON to lists after loading
+        self.scale = Decimal(state.scale)
+        self.rebounce = Decimal(state.rebounce)
+        self.volume_list = [Decimal(item) for item in json.loads(state.volume_list)]
         #except MartBotState.DoesNotExist:
             # If the state does not exist, use the original values provided to the bot.
             #pass
