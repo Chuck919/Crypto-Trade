@@ -15,6 +15,8 @@ class MartBotState(models.Model):
     scale = models.JSONField(null=True, blank=True)  # For Django 3.1+ (or use TextField for earlier versions)
     rebounce = models.JSONField(null=True, blank=True)  # For Django 3.1+ (or use TextField for earlier versions)
     volume_list = models.JSONField(null=True, blank=True)  # For Django 3.1+ (or use TextField for earlier versions)
+    price_bought = models.JSONField(null=True, blank=True)  # For Django 3.1+ (or use TextField for earlier versions)
+    amount_bought = models.JSONField(null=True, blank=True)  # For Django 3.1+ (or use TextField for earlier versions)
     volume = models.FloatField(null=True, blank=True)
     orders = models.IntegerField(null=True, blank=True)
     use = models.FloatField(null=True, blank=True)
@@ -46,6 +48,10 @@ class MartBotState(models.Model):
             self.rebounce = json.loads(self.rebounce)
         if self.volume_list:
             self.volume_list = json.loads(self.volume_list)
+        if self.amount_bought:
+            self.amount_bought = json.loads(self.amount_bought)
+        if self.price_bought:
+            self.price_bought = json.loads(self.price_bought)
 
 class CryptoBots(models.Model):
     

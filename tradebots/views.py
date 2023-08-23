@@ -13,6 +13,7 @@ from .forms import MartingaleForm
 from django.db.models import F, Max
 import pickle
 import json
+import ast
 
 global task_running
 task_running = False
@@ -46,15 +47,13 @@ class PriceUpdater:
             print(crypto_bots)
             for bot in crypto_bots:
                 if bot.bot_instance is not None:
-                    print(current_price)
                     bot_instance = pickle.loads(bot.bot_instance)
-                    try:
-                        bot_instance.load_state()
-                        bot_instance.price_check(current_price)
-                        bot_instance.save_state()
-                    except:
-                        pass
-            time.sleep(1)
+                    bot_instance.load_state()
+                    bot_instance.price_check(current_price)
+                    time.sleep(0.5)
+                    bot_instance.save_state()
+            time.sleep(0.5)
+            
 
 @login_required
 def bots(request):

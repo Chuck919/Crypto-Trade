@@ -6,6 +6,7 @@ from authentication.models import CustomUser
 from django.db.models import F, Max
 import json
 from .models import MartBotState
+import ast
 
 class MartBot:
     def __init__(self, api_key, api_secret, key, variables):
@@ -26,8 +27,8 @@ class MartBot:
             string_rebounce = variables[2].split(',')
             self.rebounce = [float(i) for i in string_rebounce]
         except:
-            self.scale = variables[1]
-            self.rebounce = variables[2]
+            self.scale = float(variables[1])
+            self.rebounce = float(variables[2])
 
         self.volume_list = []
         self.volume = float(variables[6])
@@ -52,9 +53,7 @@ class MartBot:
         self.recent_trailing_buy_price = None
         self.trailing_sell_price = None
         self.recent_trailing_sell_price = None
-        
-        self.load_state()
-        self.save_state()
+
 
     def print_local_variables(self):
         local_vars = self.__dict__
@@ -63,7 +62,7 @@ class MartBot:
 
     def main(self, new_price):
         print(f'in bot {self.key} main')
-        self.print_local_variables()
+        #self.print_local_variables()
         if self.bought == 0:
             self.buy_order(new_price)
 
@@ -73,17 +72,15 @@ class MartBot:
         elif self.selling is True:
             self.trailing_sell(new_price)
 
-        elif self.bought >= 1 and self.bought < self.orders and new_price <= self.price_bought[-1]*(1-self.scale[self.bought]/100):
+        elif self.bought >= 1 and self.bought < self.orders and new_price <= self.price_bought[-1]*(1-self.scale/100):
             self.buying = True
             self.recent_trailing_buy_price = new_price
-            self.trailing_buy_price = round(new_price*(1+self.rebounce[self.bought]/100), 4)
-            self.save_state()
+            self.trailing_buy_price = round(new_price*(1+self.rebounce/100), 4)
 
         elif self.bought >= 1 and new_price >= self.sell_price:
             self.selling = True
             self.recent_trailing_sell_price = new_price
             self.trailing_sell_price = round(new_price*(1-self.trailing/100), 4)
-            self.save_state()
 
         else:
             pass
@@ -104,7 +101,6 @@ class MartBot:
             print('buying')
             self.trailing_buy_price = self.trailing_buy_price - (self.trailing_buy_price - new_price)
             self.recent_trailing_buy_price = new_price
-            self.save_state()
 
         #if price goes above trailing buy amount, creates a buy order
         elif self.trailing_buy_price <= new_price:
@@ -118,7 +114,6 @@ class MartBot:
         if self.recent_trailing_sell_price < new_price:
             self.trailing_sell_price = self.trailing_sell_price - (self.trailing_sell_price - new_price)
             self.recent_trailing_sell_price = new_price
-            self.save_state()
             
             print('selling')
 
@@ -154,8 +149,6 @@ class MartBot:
         self.trailing_buy_price = None
         self.recent_trailing_buy_price = None
         self.buying = False
-        
-        self.save_state()
         
         print('bought')
 
@@ -196,8 +189,6 @@ class MartBot:
         print(f'Round Profit: {round(round_profit, 4)}')
         print(f'Total Profit: {round(self.total_profit, 4)}')
         
-        self.save_state()
-        
         print('sold')
 
     def save_state(self):
@@ -224,18 +215,21 @@ class MartBot:
         state.recent_trailing_sell_price = self.recent_trailing_sell_price
 
         # Convert lists to JSON before saving
-        state.scale = str(self.scale)
-        state.rebounce = str(self.rebounce)
-        state.volume_list = json.dumps([str(item) for item in self.volume_list]) 
+        state.scale = json.dumps(float(self.scale))
+        state.rebounce = json.dumps(float(self.rebounce))
+        print(type(self.volume_list))
+        state.volume_list = json.dumps(self.volume_list)
+        print(type(state.volume_list))
+        state.price_bought = json.dumps(self.price_bought)
+        state.amount_bought = json.dumps(self.amount_bought)
         state.save()
 
-        # Save the state to the database.
-        state.save()
+
+        print('saved')
             
             
     
     def load_state(self):
-        # Get the MartBotState instance associated with the user and bot_name.
         try:
             state = MartBotState.objects.get(api_secret=self.api_secret, bot_name=self.key)
             self.total_profit = state.total_profit
@@ -254,11 +248,67 @@ class MartBot:
             self.recent_trailing_buy_price = state.recent_trailing_buy_price
             self.trailing_sell_price = state.trailing_sell_price
             self.recent_trailing_sell_price = state.recent_trailing_sell_price
+            
+            print(state.scale)
+            print(state.rebounce)
+            print(state.volume_list)
+            
+            #if '[' in state.scale:
+            self.scale = float(json.loads(state.scale))
+            print(self.scale)
+            #self.scale = self.scale.strip("[]")
+            #self.scale = self.scale.split(",")
+            #self.scale = [float(item.strip()) for item in self.scale]
+            #print(self.scale)
+        #else:
+            #self.scale = float(json.loads(state.scale))
+            #print(self.scale)
+            
 
-            # Convert JSON to lists after loading
-            self.scale = Decimal(state.scale)
-            self.rebounce = Decimal(state.rebounce)
-            self.volume_list = [Decimal(item) for item in json.loads(state.volume_list)]
+            self.rebounce = float(json.loads(state.rebounce))
+            print(self.rebounce)
+            #if '[' in self.rebounce:
+                #self.rebounce = self.rebounce.strip("[]")
+                #self.rebounce = self.rebounce.split(",")
+                #self.rebounce = [float(item.strip()) for item in self.rebounce]
+                #print(self.rebounce)
+           # else:
+                #self.rebounce = float(json.loads(state.rebounce))
+                #print(self.rebounce)
+            print(type(state.volume_list))
+            self.volume_list = json.loads(state.volume_list)
+            print(self.volume_list)
+            print(type(state.volume_list))
+
+            if '[' in state.volume_list:
+                self.volume_list = self.volume_list.strip("[]")
+                self.volume_list = self.volume_list.split(",")
+                self.volume_list = [float(item.strip()) for item in self.volume_list]
+                print(self.volume_list)
+            else:
+                self.volume_list = float(json.loads(state.volume_list))
+                print(self.volume_list)
+            
+
+            self.amount_bought = json.loads(state.amount_bought)
+            self.amount_bought = [float(item) for item in self.amount_bought]
+            #print(self.amount_bought)
+            #self.amount_bought = self.amount_bought.strip("[]")
+            #self.amount_bought = self.amount_bought.split(",")
+            #self.amount_bought = [float(item.strip()) for item in self.amount_bought]
+            #print(self.amount_bought)
+            #self.amount_bought = float(json.loads(state.amount_bought))
+            #print(self.amount_bought)
+        
+
+            self.price_bought = json.loads(state.price_bought)
+            self.price_bought = [float(item) for item in self.price_bought]
+            #print(self.price_bought)
+            #self.price_bought = self.price_bought.strip("[]")
+            #self.price_bought = self.price_bought.split(",")
+            #self.price_bought = [float(item.strip()) for item in self.price_bought]
+           # print(self.price_bought)
+
         except MartBotState.DoesNotExist:
             # If the state does not exist, use the original values provided to the bot.
             pass
